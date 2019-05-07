@@ -26,6 +26,7 @@ def createPipelineJob(folderName, name, script) {
   job.definition = flowDefinition
 }
 
+/*
 createPipelineJob("pipelines", "script", '''
 
 stage('echo') {
@@ -43,3 +44,4 @@ stage('other') {
 }
 
 '''.trim())
+*/

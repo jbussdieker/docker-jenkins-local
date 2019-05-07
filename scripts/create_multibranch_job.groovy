@@ -34,4 +34,4 @@ def createMultibranchScm(folderName, name, repo, jobScript) {
   sources.add(branchSource)
 }
 
-createMultibranchScm("pipelines", "scm", "/local", "Jenkinsfile")
+createMultibranchScm(null, "local", "/local", "Jenkinsfile")

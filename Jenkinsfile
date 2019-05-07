@@ -1,2 +1,2 @@
 #!groovy
-build()
+docker('jenkins-local')

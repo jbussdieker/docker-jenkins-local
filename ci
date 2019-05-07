@@ -1,0 +1,30 @@
+#!/bin/bash
+set -euo pipefail
+
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+
+docker stop jenkins-local || true
+docker run \
+  --group-add 0 \
+  --name jenkins-local \
+  -p 8080:8080 \
+  -v ${PWD}:/local \
+  -v ${DIR}/workflow-libs:/var/jenkins_home/workflow-libs \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v /usr/local/bin/docker:/usr/local/bin/docker \
+  --rm \
+  -d \
+  jenkins-local
+
+while ! curl -u admin:admin -s localhost:8080 -o /dev/null -w '%{http_code}\n' | grep 200; do
+  sleep 1
+done
+
+crumb=$(curl -s -u admin:admin "http://localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,%22:%22,//crumb)")
+curl -XPOST -u admin:admin -s http://localhost:8080/job/local/build?delay=0 -H "${crumb}"
