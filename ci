@@ -28,3 +28,5 @@ done
 
 crumb=$(curl -s -u admin:admin "http://localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,%22:%22,//crumb)")
 curl -XPOST -u admin:admin -s http://localhost:8080/job/local/build?delay=0 -H "${crumb}"
+
+open http://localhost:8080/job/local/
