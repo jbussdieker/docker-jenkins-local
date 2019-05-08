@@ -1,5 +1,5 @@
-def call() {
+def call(cmd) {
   docker.image("jbussdieker/aws:stable").inside {
-    sh "aws --version"
+    sh "aws ${cmd}"
   }
 }
