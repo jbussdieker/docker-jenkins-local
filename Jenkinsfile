@@ -7,5 +7,3 @@ node {
   packer()
   terraform()
 }
-
-docker('jenkins-local')
